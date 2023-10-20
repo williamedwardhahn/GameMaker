@@ -18,7 +18,7 @@ Focus on a unified color palette and consistent style throughout the asset sheet
 
 
 
-
+---
 
 
 Design a pixel art asset sheet for the action-adventure game, set in a diverse and fantastical world. The asset sheet should contain the following elements:
