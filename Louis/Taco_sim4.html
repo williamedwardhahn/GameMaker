@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Taco Stand Management</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    img {
+      width: 50px;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Taco Stand Management</h1>
+
+<div>
+  <h2>Starting Budget: $<span id="budget">100</span></h2>
+</div>
+
+<div>
+  <label for="markup">Markup Rate: </label>
+  <input type="range" id="markup" min="0" max="100" value="0">
+  <span id="markupValue">0%</span>
+</div>
+
+<table id="tacoTable">
+  <thead>
+    <tr>
+      <th>Taco Type</th>
+      <th>Icon</th>
+      <th>Cost</th>
+      <th>Price</th>
+      <th>Inventory</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tacoBody">
+    <!-- Filled by JavaScript -->
+  </tbody>
+</table>
+
+<div>
+  <h2>Total Sales: $<span id="totalSales">0</span></h2>
+</div>
+
+<script>
+  let budget = 100;
+  let markupRate = 0;
+
+  const tacos = [
+    { type: 'Chicken', cost: 3, price: 5, inventory: 10 },
+    { type: 'Beef', cost: 4, price: 6, inventory: 8 },
+    { type: 'Veggie', cost: 2, price: 4, inventory: 12 }
+  ];
+
+  let totalSales = 0;
+
+  function sellTaco(type) {
+    const taco = tacos.find(t => t.type === type);
+    if (taco.inventory > 0) {
+      taco.inventory--;
+      totalSales += taco.price;
+      updateTable();
+    } else {
+      alert('Out of stock!');
+    }
+  }
+
+  function buyTaco(type) {
+    const taco = tacos.find(t => t.type === type);
+    if (budget >= taco.cost) {
+      taco.inventory++;
+      budget -= taco.cost;
+      updateTable();
+    } else {
+      alert('Insufficient funds!');
+    }
+  }
+
+  function updateMarkup() {
+    markupRate = parseFloat(document.getElementById('markup').value);
+    document.getElementById('markupValue').innerText = `${markupRate}%`;
+    tacos.forEach(taco => {
+      taco.price = Math.round(taco.cost * (1 + markupRate / 100));
+    });
+    updateTable();
+  }
+
+  function updateTable() {
+    document.getElementById('budget').innerText = budget;
+    document.getElementById('totalSales').innerText = totalSales;
+
+    const tacoBody = document.getElementById('tacoBody');
+    tacoBody.innerHTML = '';
+    tacos.forEach(taco => {
+      const row = `
+        <tr>
+          <td>${taco.type}</td>
+          <td><img src="${taco.type.toLowerCase()}.png" alt="${taco.type}"></td>
+          <td>$${taco.cost}</td>
+          <td>$${taco.price}</td>
+          <td>${taco.inventory}</td>
+          <td>
+            <button onclick="sellTaco('${taco.type}')">Sell</button>
+            <button onclick="buyTaco('${taco.type}')">Buy</button>
+          </td>
+        </tr>
+      `;
+      tacoBody.innerHTML += row;
+    });
+  }
+
+  window.onload = function() {
+    document.getElementById('markup').addEventListener('input', updateMarkup);
+    updateTable();
+    updateMarkup();  // Ensure the markup rate is applied when the page first loads
+  }
+</script>
+
+</body>
+</html>
+

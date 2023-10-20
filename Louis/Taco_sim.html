@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Taco Stand Management</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid black;
+      text-align: center;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+  <h1>Taco Stand Management</h1>
+
+  <table id="tacoTable">
+    <thead>
+      <tr>
+        <th>Taco Type</th>
+        <th>Price</th>
+        <th>Inventory</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="tacoBody">
+      <!-- Filled by JavaScript -->
+    </tbody>
+  </table>
+
+  <div>
+    <h2>Total Sales: $<span id="totalSales">0</span></h2>
+  </div>
+
+  <script>
+    // Initial inventory and prices
+    const tacos = [
+      { type: 'Chicken', price: 5, inventory: 10 },
+      { type: 'Beef', price: 6, inventory: 8 },
+      { type: 'Veggie', price: 4, inventory: 12 }
+    ];
+
+    let totalSales = 0;
+
+    // Function to sell taco and update inventory and sales
+    function sellTaco(type) {
+      const taco = tacos.find(t => t.type === type);
+      if (taco.inventory > 0) {
+        taco.inventory--;
+        totalSales += taco.price;
+        updateTable();
+      } else {
+        alert('Out of stock!');
+      }
+    }
+
+    // Function to update the table
+    function updateTable() {
+      const tacoBody = document.getElementById('tacoBody');
+      tacoBody.innerHTML = '';
+      tacos.forEach(taco => {
+        const row = `
+          <tr>
+            <td>${taco.type}</td>
+            <td>$${taco.price}</td>
+            <td>${taco.inventory}</td>
+            <td><button onclick="sellTaco('${taco.type}')">Sell</button></td>
+          </tr>
+        `;
+        tacoBody.innerHTML += row;
+      });
+
+      document.getElementById('totalSales').innerText = totalSales;
+    }
+
+    // Initialize table
+    window.onload = function() {
+      updateTable();
+    }
+  </script>
+</body>
+</html>
+
